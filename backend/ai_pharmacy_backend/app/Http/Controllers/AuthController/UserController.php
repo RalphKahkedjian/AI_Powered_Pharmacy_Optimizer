@@ -48,4 +48,20 @@ class UserController extends Controller
                 "message" => "Invalid credentials."
             ], 401);
         }
+
+        public function delete($id) {
+            $user = User::find($id);
+            if($user) {
+                $user->delete();
+                return response()->json([
+                    "status" => true,
+                    "message" => "User deleted successfully"
+                ]);
+            }
+
+            return response()->json([
+                "status" => false,
+                "message" => "User with ID {$id} not found"
+            ]);
+        }
 }
