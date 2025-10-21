@@ -27,6 +27,9 @@ const Login: React.FC = () => {
     <div className="login-container">
       <form className="login-form" onSubmit={handleLogin}>
         <h2 className="login-title">Login</h2>
+        <p style={{
+          transform:'translateY(-10px)'
+        }}>AI-Powered-Pharmacy-Optimizer</p>
         {error && <p className="login-error">{error}</p>}
         <input
           type="email"
