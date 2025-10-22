@@ -136,9 +136,9 @@
 }
 
 /* Color themes */
-.card.green .value { color: #14a44d; }
-.card.red .value { color: #e83d3d; }
-.card.blue .value { color: #1e88e5; }
+.card.green .value { color: #232d2d; }
+.card.red .value { color: #232d2d; }
+.card.blue .value { color: #232d2d; }
 
 /* Chart Section */
 .chart-section {

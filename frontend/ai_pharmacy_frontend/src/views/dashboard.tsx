@@ -1,7 +1,11 @@
 import "../assets/styles/dashboard.css";
+import { useLogout } from "../services/AuthServices/logout";
 
 export default function Dashboard() {
+  const logout = useLogout()
+  const username = localStorage.getItem("USER_USERNAME");
 
+  console.log("User logged in as:", username);
 
   return (
     <div className="dashboard-container">
@@ -16,6 +20,7 @@ export default function Dashboard() {
           <a href="#">Inventory</a>
           <a href="#">Prescriptions</a>
           <a href="#">Settings</a>
+          <a href="#" onClick={logout}>Logout</a>
         </nav>
         <p className="sidebar-footer">© 2025 PharmaAI</p>
       </aside>
@@ -23,12 +28,7 @@ export default function Dashboard() {
       {/* Main Content */}
       <main className="main-content">
         <header className="top-bar">
-          <h1>Dashboard Overview</h1>
-          <div className="user-profile">
-            <button className="logout-btn">
-              Logout
-            </button>
-          </div>
+          <h1>Welcome Back, {username} !</h1>
         </header>
 
         {/* Info Cards */}

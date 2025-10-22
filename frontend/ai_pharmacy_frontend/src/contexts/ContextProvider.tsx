@@ -20,22 +20,20 @@ interface ContextProviderProps {
 }
 
 export const ContextProvider = ({ children }: ContextProviderProps) => {
-  const [user, setUser] = useState<string | null>(null);
-  const [token, _setToken] = useState<string | null>(
-    null
-  );
+  const [user, setUser] = useState<string | null>(localStorage.getItem('USER_USERNAME'));
+  const [token, setToken] = useState<string | null>(localStorage.getItem('ACCESS_TOKEN'));
 
-  const setToken = (token: string | null) => {
-    _setToken(token);
-    if (token) {
-      localStorage.setItem("ACCESS_TOKEN", token);
+  const updateToken = (newToken: string | null) => {
+    setToken(newToken);
+    if (newToken) {
+      localStorage.setItem("ACCESS_TOKEN", newToken);
     } else {
       localStorage.removeItem("ACCESS_TOKEN");
     }
   };
 
   return (
-    <StateContext.Provider value={{ user, token, setUser, setToken }}>
+    <StateContext.Provider value={{ user, token, setUser, setToken: updateToken }}>
       {children}
     </StateContext.Provider>
   );
