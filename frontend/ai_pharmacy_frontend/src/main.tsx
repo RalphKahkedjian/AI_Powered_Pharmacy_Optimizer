@@ -1,10 +1,13 @@
-// index.tsx
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
-import Login from "./views/LoginPage"; 
+import React from "react";
+import ReactDOM from 'react-dom/client'
+import { RouterProvider } from "react-router-dom";
+import router from "./router";
+import { ContextProvider } from "./contexts/ContextProvider";
 
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <Login />
-  </StrictMode>
+ReactDOM.createRoot(document.getElementById("root")!).render(
+  <React.StrictMode>
+    <ContextProvider>
+      <RouterProvider router={router} />
+    </ContextProvider>
+  </React.StrictMode>
 );

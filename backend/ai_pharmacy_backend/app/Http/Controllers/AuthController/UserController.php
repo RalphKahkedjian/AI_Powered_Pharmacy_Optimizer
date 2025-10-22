@@ -39,6 +39,10 @@ class UserController extends Controller
                 return response()->json([
                     "status" => true,
                     "message" => "Welcome back, {$user->username}!",
+                    "user" => [
+                        "username" => $user->username,
+                        "email" => $user->email
+                    ],
                     "token" => $accessToken
                 ]);
             }
@@ -62,6 +66,14 @@ class UserController extends Controller
             return response()->json([
                 "status" => false,
                 "message" => "User with ID {$id} not found"
+            ]);
+        }
+
+        public function list() {
+            $users = User::paginate()->all();
+            return response()->json([
+                "status" => true,
+                "user" => $users
             ]);
         }
 }
