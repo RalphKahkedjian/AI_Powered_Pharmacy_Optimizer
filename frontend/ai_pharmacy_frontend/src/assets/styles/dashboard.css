@@ -51,7 +51,7 @@
 .nav-links a:hover,
 .nav-links a.active {
   background-color: #BDE1E2;
-  color: #fff;
+  color: black;
 }
 
 .sidebar-footer {
