@@ -4,6 +4,7 @@ import NotFound from "./views/NotFound";
 import DefaultLayout from "./components/defaultLayout";
 import GuestLayout from "./components/GuestLayout";
 import Dashboard from "./views/dashboard";
+import Inventory from "./views/Inventory";
 
 const router = createBrowserRouter([
   {
@@ -14,6 +15,10 @@ const router = createBrowserRouter([
       {
         path:'/',
         element: <Dashboard />
+      },
+      {
+        path:'/inventory',
+        element: <Inventory />
       }
     ]
   },

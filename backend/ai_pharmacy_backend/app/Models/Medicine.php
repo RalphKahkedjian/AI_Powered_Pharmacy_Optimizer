@@ -11,7 +11,8 @@ class Medicine extends Model
 
     protected $fillable = [
         'name',
-        'batch_number',
+        'image_url',
+        'batch',
         'quantity',
         'expiry_date',
         'supplier_id',

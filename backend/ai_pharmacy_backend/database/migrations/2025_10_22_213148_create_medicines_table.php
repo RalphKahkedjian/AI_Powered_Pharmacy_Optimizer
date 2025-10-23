@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('medicines', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->string('image_url')->nullable();
             $table->string('batch')->nullable();
             $table->integer('quantity')->default(0);
             $table->date('expiry_date')->nullable();
