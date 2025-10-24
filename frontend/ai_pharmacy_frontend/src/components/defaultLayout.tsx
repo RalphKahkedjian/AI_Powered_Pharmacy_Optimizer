@@ -8,6 +8,16 @@ export default function DefaultLayout() {
   const logout = useLogout();
   const location = useLocation();
 
+  const rawUsername = localStorage.getItem("USER_USERNAME") || "User";
+const firstName = rawUsername.split(" ")[0];
+const getGreeting = () => {
+  const hour = new Date().getHours();
+
+  if (hour < 12) return `Good morning, ${firstName}`;
+  if (hour >= 12 && hour < 18) return `Good afternoon, ${firstName}`;
+  return `Good evening, ${firstName}`;
+};
+
   if (!token) {
     return <Navigate to="/login" />;
   }
@@ -32,8 +42,8 @@ export default function DefaultLayout() {
     <div className="dashboard-container">
       {/* Sidebar */}
       <aside className="sidebar">
-        <h2 className="logo" style={{ color: "whitesmoke" }}>
-          PharmaAI
+        <h2 className="logo" style={{ color: "whitesmoke", textAlign: "center" }}>
+          {getGreeting() + " !"}
         </h2>
 
         <nav className="nav-links">
@@ -43,8 +53,8 @@ export default function DefaultLayout() {
           <NavLink to="/inventory" className={({ isActive }) => (isActive ? "active" : "")}>
             Inventory
           </NavLink>
-          <NavLink to="/prescriptions" className={({ isActive }) => (isActive ? "active" : "")}>
-            Prescriptions
+          <NavLink to="/suppliers" className={({ isActive }) => (isActive ? "active" : "")}>
+            Suppliers
           </NavLink>
           <NavLink to="/settings" className={({ isActive }) => (isActive ? "active" : "")}>
             Settings

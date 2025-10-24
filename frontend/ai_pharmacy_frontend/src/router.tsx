@@ -5,6 +5,7 @@ import DefaultLayout from "./components/defaultLayout";
 import GuestLayout from "./components/GuestLayout";
 import Dashboard from "./views/dashboard";
 import Inventory from "./views/Inventory";
+import Suppliers from "./views/Suppliers";
 
 const router = createBrowserRouter([
   {
@@ -19,6 +20,10 @@ const router = createBrowserRouter([
       {
         path:'/inventory',
         element: <Inventory />
+      },
+      {
+        path:'/suppliers',
+        element: <Suppliers />
       }
     ]
   },

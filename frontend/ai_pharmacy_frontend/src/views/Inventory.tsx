@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchMedicines } from "../services/medicineServices/medicine";
+import { fetchMedicines } from "../services/medicineServices/GetMedicine";
 import type { Medicine } from "../models/Medicine";
 import "../assets/styles/inventory.css";
 
