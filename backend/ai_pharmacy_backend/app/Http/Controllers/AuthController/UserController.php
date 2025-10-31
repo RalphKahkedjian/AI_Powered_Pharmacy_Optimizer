@@ -41,7 +41,8 @@ class UserController extends Controller
                     "message" => "Welcome back, {$user->username}!",
                     "user" => [
                         "username" => $user->username,
-                        "email" => $user->email
+                        "email" => $user->email,
+                        "age" => $user->age,
                     ],
                     "token" => $accessToken
                 ]);

@@ -13,9 +13,9 @@ const firstName = rawUsername.split(" ")[0];
 const getGreeting = () => {
   const hour = new Date().getHours();
 
-  if (hour < 12) return `Good morning, ${firstName}`;
-  if (hour >= 12 && hour < 18) return `Good afternoon, ${firstName}`;
-  return `Good evening, ${firstName}`;
+  if (hour < 12) return `Good Morning, ${firstName}`;
+  if (hour >= 12 && hour < 18) return `Good Afternoon, ${firstName}`;
+  return `Good Evening, ${firstName}`;
 };
 
   if (!token) {
@@ -31,8 +31,8 @@ const getGreeting = () => {
         return "Inventory";
       case "/suppliers":
         return "Suppliers";
-      case "/settings":
-        return "Settings";
+      case "/profile":
+        return "Profile";
       default:
         return "Dashboard";
     }
@@ -56,8 +56,8 @@ const getGreeting = () => {
           <NavLink to="/suppliers" className={({ isActive }) => (isActive ? "active" : "")}>
             Suppliers
           </NavLink>
-          <NavLink to="/settings" className={({ isActive }) => (isActive ? "active" : "")}>
-            Settings
+          <NavLink to="/profile" className={({ isActive }) => (isActive ? "active" : "")}>
+            Profile
           </NavLink>
         </nav>
 
@@ -67,7 +67,7 @@ const getGreeting = () => {
       {/* Main Area */}
       <main className="main-content">
         <header className="top-bar">
-          <h2>{getPageTitle()}</h2>
+          <h1>{getPageTitle()}</h1>
           <button onClick={logout} className="logout-btn">
             Logout
           </button>

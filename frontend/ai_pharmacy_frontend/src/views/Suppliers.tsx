@@ -81,7 +81,7 @@ export default function Suppliers() {
     <div className="supplier-container">
       {/* Add Supplier Button */}
       <button className="add-btn" onClick={() => setShowAddModal(true)}>
-        Add Supplier
+        + Add Supplier
       </button>
 
       {/* Supplier Table */}

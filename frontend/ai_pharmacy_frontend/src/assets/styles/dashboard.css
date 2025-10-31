@@ -4,10 +4,11 @@
 * {
   font-family:'Montserrat' ;
 }
+
 .dashboard-container {
   display: flex;
   height: 100vh;
-  background-color: #BDE1E2;
+  background-color: #DBD7C9;
   font-family: "Segoe UI", sans-serif;
   color: #333;
 }
@@ -15,7 +16,7 @@
 /* Sidebar */
 .sidebar {
   width: 240px;
-  background-color: #232d2d;
+  background-color: #4C4B43;
   color: whitesmoke;
   display: flex;
   flex-direction: column;
@@ -52,6 +53,7 @@
 .nav-links a.active {
   background-color: #BDE1E2;
   color: black;
+  font-weight: 600;
 }
 
 .sidebar-footer {
@@ -79,7 +81,7 @@
 .top-bar h1 {
   font-size: 1.8rem;
   font-weight: 600;
-  color: #232d2d;
+  color: #4C4B43;
 }
 
 .user-profile {
@@ -136,9 +138,9 @@
 }
 
 /* Color themes */
-.card.green .value { color: #232d2d; }
-.card.red .value { color: #232d2d; }
-.card.blue .value { color: #232d2d; }
+.card.green .value { color: #4C4B43; }
+.card.red .value { color: #4C4B43; }
+.card.blue .value { color: #4C4B43; }
 
 /* Chart Section */
 .chart-section {
@@ -215,12 +217,12 @@
 
 .logout-btn {
   padding: 6px 12px;
-  background-color: #232d2d;
-  padding: 12px 25px;
+  background-color: #4C4B43;
+  padding: 14px 30px;
+  border-radius: 12px;
   font-size: .9em;
   color: white;
   border: none;
-  border-radius: 4px;
   cursor: pointer;
   font-weight: 500;
   transition: background 0.3s;

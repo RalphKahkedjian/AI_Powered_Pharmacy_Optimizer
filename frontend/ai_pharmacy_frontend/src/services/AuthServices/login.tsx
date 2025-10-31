@@ -9,6 +9,7 @@ export const login = async (user: User) => {
     const response = await axiosClient.post("/user/login", {
       email: user.email,
       password: user.password,
+      age: user.age
     });
 
     console.log("Login response:", response.data);
@@ -17,8 +18,9 @@ export const login = async (user: User) => {
 
     if (token && userData) {
       localStorage.setItem("USER_USERNAME", userData.username);
-      localStorage.setItem("ACCESS_TOKEN", token);
       localStorage.setItem("USER_EMAIL", userData.email);
+      localStorage.setItem("USER_AGE", userData.age);
+      localStorage.setItem("ACCESS_TOKEN", token);
     }
 
     return response.data;
@@ -39,6 +41,8 @@ export const logout = (navigate: Function) => {
   
   localStorage.removeItem('ACCESS_TOKEN');
   localStorage.removeItem('USER_USERNAME');
+  localStorage.removeItem('USER_EMAIL');
+  localStorage.removeItem('USER_AGE')
   
   setToken(null); 
   navigate("/login");

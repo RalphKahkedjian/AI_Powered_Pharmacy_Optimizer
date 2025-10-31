@@ -22,6 +22,7 @@ export default function LoginPage() {
 
   return (
     <div className="login-container">
+
       <form onSubmit={handleLogin} className="login-form">
         <h2 className="login-title">PharmaAI</h2>
 
