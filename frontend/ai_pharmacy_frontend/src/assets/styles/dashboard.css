@@ -37,13 +37,15 @@
 .nav-links {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  text-align: center;
   gap: 18px;
 }
 
 .nav-links a {
   text-decoration: none;
   color: whitesmoke;
-  font-size: 1rem;
+  font-size: 1.1rem;
   transition: all 0.3s;
   border-radius: 6px;
   padding: 8px 10px;

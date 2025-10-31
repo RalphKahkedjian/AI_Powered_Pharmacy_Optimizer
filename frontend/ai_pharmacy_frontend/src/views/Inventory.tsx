@@ -12,17 +12,22 @@ export default function Inventory() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
   const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false); // new
+  const [submitting, setSubmitting] = useState(false);
 
-  const [newMedicine, setNewMedicine] = useState<MedicineInput>({
+  const [newMedicine, setNewMedicine] = useState<
+    MedicineInput & { image?: File | null; preview?: string | null }
+  >({
     name: "",
     image_url: "",
     batch: "",
     quantity: 0,
     expiry_date: "",
     supplier_id: 0,
+    image: null,
+    preview: null,
   });
 
+  // Load data
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
@@ -42,43 +47,59 @@ export default function Inventory() {
     loadData();
   }, []);
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setShowCreateModal(false);
-  setSubmitting(true);
+  // Handle form submission
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitting(true);
+    setShowCreateModal(false); // closes modal immediately
 
-  try {
-    await addMedicine(newMedicine); 
-    const medicineData = await fetchMedicines();
-    setMedicines(medicineData);
-    setNewMedicine({
-      name: "",
-      image_url: "",
-      batch: "",
-      quantity: 0,
-      expiry_date: "",
-      supplier_id: 0,
-    });
-  } catch (error) {
-    console.error("Error creating medicine:", error);
-  } finally {
-    setSubmitting(false);
-  }
-};
+    try {
+      const formData = new FormData();
+      formData.append("name", newMedicine.name);
+      formData.append("batch", newMedicine.batch ?? "");
+      formData.append("quantity", newMedicine.quantity.toString());
+      formData.append("expiry_date", newMedicine.expiry_date ?? "");
+      formData.append("supplier_id", newMedicine.supplier_id.toString());
+      if (newMedicine.image) {
+        formData.append("image", newMedicine.image);
+      }
 
+      await addMedicine(formData);
+      const medicineData = await fetchMedicines();
+      setMedicines(medicineData);
+
+      // Reset form
+      setNewMedicine({
+        name: "",
+        image_url: "",
+        batch: "",
+        quantity: 0,
+        expiry_date: "",
+        supplier_id: 0,
+        image: null,
+        preview: null,
+      });
+    } catch (error) {
+      console.error("Error creating medicine:", error);
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   const handleImageDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
     if (file) {
-      setNewMedicine({ ...newMedicine, image_url: `images/${file.name}` });
+      const previewUrl = URL.createObjectURL(file);
+      setNewMedicine({ ...newMedicine, image: file, preview: previewUrl });
     }
   };
 
   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setNewMedicine({ ...newMedicine, image_url: `images/${file.name}` });
+      const previewUrl = URL.createObjectURL(file);
+      setNewMedicine({ ...newMedicine, image: file, preview: previewUrl });
     }
   };
 
@@ -173,18 +194,43 @@ const handleSubmit = async (e: React.FormEvent) => {
                 onChange={(e) => setNewMedicine({ ...newMedicine, name: e.target.value })}
                 required
               />
+
+              {/* Image Drop Zone */}
               <div
                 className="drop-zone"
                 onDrop={handleImageDrop}
                 onDragOver={(e) => e.preventDefault()}
               >
-                {newMedicine.image_url ? (
-                  <p>📸 {newMedicine.image_url}</p>
-                ) : (
-                  <p>Drag & drop image here or click below</p>
+              <div className="file-upload">
+                <input
+                  type="file"
+                  id="fileInput"
+                  accept="image/*"
+                  onChange={handleFileInput}
+                  style={{ display: "none" }}
+                />
+                <label
+                  htmlFor="fileInput"
+                  className="upload-btn"
+                >
+                  Upload Image
+                </label>
+
+                {newMedicine.preview && (
+                  <div className="image-preview">
+                    <img
+                      src={newMedicine.preview}
+                      alt="Preview"
+                      className="preview-img"
+                      style={{
+                        marginBottom:'10px'
+                      }}
+                    />
+                  </div>
                 )}
-                <input type="file" accept="image/*" onChange={handleFileInput} />
               </div>
+              </div>
+
               <input
                 type="text"
                 placeholder="Batch"

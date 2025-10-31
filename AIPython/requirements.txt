@@ -1,0 +1,9 @@
+🧠 Main AI Goals in My Project
+
+AI Feature	Model Type	Python Libraries
+🧾 Demand Prediction (Which medicines will sell more soon)	Time Series Forecasting / Regression	scikit-learn, statsmodels, prophet, or XGBoost
+💊 Expiry Risk Analysis (Which medicines will expire before being sold)	Classification	scikit-learn, lightgbm, tensorflow
+🏭 Reorder Suggestions (How much stock to reorder)	Regression + Optimization	scikit-learn, pulp (linear optimization)
+🧾 Revenue & Sales Insights	Statistical analysis, not heavy AI	pandas, numpy, matplotlib
+🚚 Supplier Recommendation	Ranking / Recommendation System	scikit-learn, surprise, or lightfm
+⚠️ Anomaly Detection (Unusual sales patterns, fraud, etc.)	Isolation Forest / Autoencoders	scikit-learn, tensorflow, pyod

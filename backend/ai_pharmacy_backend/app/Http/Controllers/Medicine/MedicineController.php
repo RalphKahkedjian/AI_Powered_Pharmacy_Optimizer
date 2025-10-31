@@ -14,27 +14,53 @@ class MedicineController
         return response()->json($medicines);
     }
 
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string',
-            'batch' => 'nullable|string',
-            'quantity' => 'required|integer|min:0',
-            'expiry_date' => 'nullable|date',
-            'supplier_id' => 'required|exists:suppliers,id',
-            'image_url' => 'nullable|string',
-        ]);
+public function store(Request $request)
+{
+    $validated = $request->validate([
+        'name' => 'required|string',
+        'batch' => 'nullable|string',
+        'quantity' => 'required|integer|min:0',
+        'expiry_date' => 'nullable|date',
+        'supplier_id' => 'required|exists:suppliers,id',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+    ]);
 
-        $medicine = Medicine::create($validated);
-        return response()->json(['message' => 'Medicine added successfully', 'medicine' => $medicine]);
+    if ($request->hasFile('image')) {
+        $path = $request->file('image')->store('medicines', 'public');
+        $validated['image_url'] = $path;
     }
 
-    public function update(Request $request, $id)
-    {
-        $medicine = Medicine::findOrFail($id);
-        $medicine->update($request->all());
-        return response()->json(['message' => 'Medicine updated successfully']);
+    $medicine = Medicine::create($validated);
+
+    return response()->json([
+        'message' => 'Medicine added successfully',
+        'medicine' => $medicine,
+    ]);
+}
+
+
+public function update(Request $request, $id)
+{
+    $medicine = Medicine::findOrFail($id);
+
+    $validated = $request->validate([
+        'name' => 'sometimes|required|string',
+        'batch' => 'nullable|string',
+        'quantity' => 'sometimes|required|integer|min:0',
+        'expiry_date' => 'nullable|date',
+        'supplier_id' => 'sometimes|required|exists:suppliers,id',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+    ]);
+
+    if ($request->hasFile('image')) {
+        $path = $request->file('image')->store('medicines', 'public');
+        $validated['image_url'] = $path;
     }
+
+    $medicine->update($validated);
+
+    return response()->json(['message' => 'Medicine updated successfully']);
+}
 
     public function destroy($id)
     {
