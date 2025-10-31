@@ -51,15 +51,15 @@
 
 .nav-links a:hover,
 .nav-links a.active {
-  background-color: #BDE1E2;
-  color: black;
+  background-color: #DBD7C9;
+  color: #4C4B43;
   font-weight: 600;
 }
 
 .sidebar-footer {
   font-size: 0.8rem;
   text-align: center;
-  color: #BDE1E2;
+  color: #DBD7C9;
   margin-top: auto;
 }
 

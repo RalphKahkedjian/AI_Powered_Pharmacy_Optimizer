@@ -3,14 +3,16 @@ import { fetchMedicines } from "../services/medicineServices/GetMedicine";
 import { addMedicine } from "../services/medicineServices/PostMedicine";
 import { fetchSuppliers } from "../services/supplierServices/GetSupplier";
 import type { Medicine, MedicineInput } from "../models/Medicine";
-import "../assets/styles/inventory.css";
 import type { Supplier } from "../models/Supplier";
+import "../assets/styles/inventory.css";
 
 export default function Inventory() {
   const [medicines, setMedicines] = useState<Medicine[]>([]);
   const [selectedMedicine, setSelectedMedicine] = useState<Medicine | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false); // new
 
   const [newMedicine, setNewMedicine] = useState<MedicineInput>({
     name: "",
@@ -23,6 +25,7 @@ export default function Inventory() {
 
   useEffect(() => {
     const loadData = async () => {
+      setLoading(true);
       try {
         const [medicineData, supplierData] = await Promise.all([
           fetchMedicines(),
@@ -32,29 +35,37 @@ export default function Inventory() {
         setSuppliers(supplierData);
       } catch (error) {
         console.error(error);
+      } finally {
+        setLoading(false);
       }
     };
     loadData();
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const created = await addMedicine(newMedicine);
-      setMedicines((prev) => [...prev, created]);
-      setShowCreateModal(false);
-      setNewMedicine({
-        name: "",
-        image_url: "",
-        batch: "",
-        quantity: 0,
-        expiry_date: "",
-        supplier_id: 0,
-      });
-    } catch (error) {
-      console.error("Error creating medicine:", error);
-    }
-  };
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setShowCreateModal(false);
+  setSubmitting(true);
+
+  try {
+    await addMedicine(newMedicine); 
+    const medicineData = await fetchMedicines();
+    setMedicines(medicineData);
+    setNewMedicine({
+      name: "",
+      image_url: "",
+      batch: "",
+      quantity: 0,
+      expiry_date: "",
+      supplier_id: 0,
+    });
+  } catch (error) {
+    console.error("Error creating medicine:", error);
+  } finally {
+    setSubmitting(false);
+  }
+};
+
 
   const handleImageDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -74,55 +85,74 @@ export default function Inventory() {
   return (
     <div className="inventory-container">
       <div className="header">
-        <button className="create-btn" style={{
-          marginBottom: '30px'
-        }} onClick={() => setShowCreateModal(true)}>
+        <button
+          className="create-btn"
+          style={{ marginBottom: "30px" }}
+          onClick={() => setShowCreateModal(true)}
+        >
           + Create Medicine
         </button>
       </div>
 
-      {/* Medicines Table */}
-      <table className="medicine-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Batch</th>
-            <th>Quantity</th>
-            <th>Expiry Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          {medicines.map((m) => (
-            <tr key={m.id} onClick={() => setSelectedMedicine(m)}>
-              <td>{m.name}</td>
-              <td>{m.batch}</td>
-              <td>{m.quantity}</td>
-              <td>{m.expiry_date}</td>
+      {/* Loading Spinner */}
+      {loading || submitting ? (
+        <div className="spinner-center">
+          <div className="spinner"></div>
+        </div>
+      ) : medicines.length === 0 ? (
+        <p>No medicines found.</p>
+      ) : (
+        <table className="medicine-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Batch</th>
+              <th>Quantity</th>
+              <th>Expiry Date</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {medicines.map((m) => (
+              <tr key={m.id} onClick={() => setSelectedMedicine(m)}>
+                <td>{m.name}</td>
+                <td>{m.batch}</td>
+                <td>{m.quantity}</td>
+                <td>{m.expiry_date}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
 
       {/* Medicine Details Modal */}
       {selectedMedicine && (
         <div className="modal-overlay" onClick={() => setSelectedMedicine(null)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <button className="close-btn" onClick={() => setSelectedMedicine(null)}>✖</button>
+            <button className="close-btn" onClick={() => setSelectedMedicine(null)}>
+              ✖
+            </button>
             <h3>{selectedMedicine.name}</h3>
-           <img
-  src={
-    selectedMedicine.image_url ?.startsWith("http")
-      ? selectedMedicine.image_url
-      : `http://127.0.0.1:8000/storage/${selectedMedicine.image_url}`
-  }
-  alt={selectedMedicine.name}
-  className="medicine-image"
-/>
-
-            <p><strong>Supplier ID:</strong> {selectedMedicine.supplier_id}</p>
-            <p><strong>Batch:</strong> {selectedMedicine.batch ?? "—"}</p>
-            <p><strong>Quantity:</strong> {selectedMedicine.quantity}</p>
-            <p><strong>Expiry Date:</strong> {selectedMedicine.expiry_date ?? "—"}</p>
+            <img
+              src={
+                selectedMedicine.image_url?.startsWith("http")
+                  ? selectedMedicine.image_url
+                  : `http://127.0.0.1:8000/storage/${selectedMedicine.image_url}`
+              }
+              alt={selectedMedicine.name}
+              className="medicine-image"
+            />
+            <p>
+              <strong>Supplier ID:</strong> {selectedMedicine.supplier_id}
+            </p>
+            <p>
+              <strong>Batch:</strong> {selectedMedicine.batch ?? "—"}
+            </p>
+            <p>
+              <strong>Quantity:</strong> {selectedMedicine.quantity}
+            </p>
+            <p>
+              <strong>Expiry Date:</strong> {selectedMedicine.expiry_date ?? "—"}
+            </p>
           </div>
         </div>
       )}
@@ -131,7 +161,9 @@ export default function Inventory() {
       {showCreateModal && (
         <div className="modal-overlay" onClick={() => setShowCreateModal(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <button className="close-btn" onClick={() => setShowCreateModal(false)}>✖</button>
+            <button className="close-btn" onClick={() => setShowCreateModal(false)}>
+              ✖
+            </button>
             <h3>Create New Medicine</h3>
             <form onSubmit={handleSubmit} className="create-form">
               <input
@@ -188,8 +220,8 @@ export default function Inventory() {
                   </option>
                 ))}
               </select>
-              <button type="submit" className="save-btn">
-                Save Medicine
+              <button type="submit" className="save-btn" disabled={submitting}>
+                {submitting ? "Saving..." : "Save Medicine"}
               </button>
             </form>
           </div>

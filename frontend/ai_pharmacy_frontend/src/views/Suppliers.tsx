@@ -12,6 +12,7 @@ export default function Suppliers() {
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
   const [selectedSupplier, setSelectedSupplier] = useState<Supplier | null>(null);
   const [medicines, setMedicines] = useState<Medicine[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -22,25 +23,22 @@ export default function Suppliers() {
   });
 
   useEffect(() => {
-    loadSuppliers();
-    loadMedicines();
+    loadData();
   }, []);
 
-  const loadSuppliers = async () => {
+  const loadData = async () => {
+    setLoading(true);
     try {
-      const data = await fetchSuppliers();
-      setSuppliers(data);
+      const [suppliersData, medicinesData] = await Promise.all([
+        fetchSuppliers(),
+        axiosClient.get("/medicines").then((res) => res.data),
+      ]);
+      setSuppliers(suppliersData);
+      setMedicines(medicinesData);
     } catch (error) {
-      console.error("Error fetching suppliers:", error);
-    }
-  };
-
-  const loadMedicines = async () => {
-    try {
-      const response = await axiosClient.get("/medicines");
-      setMedicines(response.data);
-    } catch (error) {
-      console.error("Error fetching medicines:", error);
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -53,7 +51,7 @@ export default function Suppliers() {
     e.preventDefault();
     try {
       const newSupplier = await addSupplier(formData);
-      console.log("Supplier added:", newSupplier);
+      setSuppliers((prev) => [...prev, newSupplier]);
       setShowAddModal(false);
       setFormData({
         name: "",
@@ -62,7 +60,7 @@ export default function Suppliers() {
         email: "",
         address: "",
       });
-      await loadSuppliers();
+      await loadData();
     } catch (error) {
       console.error("Error adding supplier:", error);
     }
@@ -84,10 +82,15 @@ export default function Suppliers() {
         + Add Supplier
       </button>
 
-      {/* Supplier Table */}
-      {suppliers.length === 0 ? (
+      {/* Loading Spinner */}
+      {loading ? (
+        <div className="spinner-center">
+          <div className="spinner"></div>
+        </div>
+      ) : suppliers.length === 0 ? (
         <p>No suppliers found.</p>
       ) : (
+        /* Supplier Table */
         <table className="supplier-table">
           <thead>
             <tr>
@@ -100,10 +103,7 @@ export default function Suppliers() {
           </thead>
           <tbody>
             {suppliers.map((supplier) => (
-              <tr
-                key={supplier.id}
-                onClick={() => openDetailsModal(supplier)}
-              >
+              <tr key={supplier.id} onClick={() => openDetailsModal(supplier)}>
                 <td>{supplier.name}</td>
                 <td>{supplier.contact_person}</td>
                 <td>{supplier.phone}</td>
@@ -119,10 +119,7 @@ export default function Suppliers() {
       {showAddModal && (
         <div className="modal-overlay" onClick={() => setShowAddModal(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <button
-              className="close-btn"
-              onClick={() => setShowAddModal(false)}
-            >
+            <button className="close-btn" onClick={() => setShowAddModal(false)}>
               ✖
             </button>
             <h3>Add New Supplier</h3>
@@ -173,42 +170,37 @@ export default function Suppliers() {
 
       {/* Supplier Details Modal */}
       {showDetailsModal && selectedSupplier && (
-        <div
-          className="modal-overlay"
-          onClick={() => setShowDetailsModal(false)}
-        >
+        <div className="modal-overlay" onClick={() => setShowDetailsModal(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <button
-              className="close-btn"
-              onClick={() => setShowDetailsModal(false)}
-            >
+            <button className="close-btn" onClick={() => setShowDetailsModal(false)}>
               ✖
             </button>
             <h3>{selectedSupplier.name}</h3>
             {selectedSupplier.phone && (
               <p>
                 Phone:{" "}
-                <a href={`tel:${selectedSupplier.phone}`} style={{
-                  color: 'black'
-                }}>{selectedSupplier.phone}</a>
+                <a href={`tel:${selectedSupplier.phone}`} style={{ color: "black" }}>
+                  {selectedSupplier.phone}
+                </a>
               </p>
             )}
             {selectedSupplier.email && (
               <p>
                 Email:{" "}
-                <a href={`mailto:${selectedSupplier.email}`} style={{
-                  color: 'black'
-                }}>{selectedSupplier.email}</a>
+                <a href={`mailto:${selectedSupplier.email}`} style={{ color: "black" }}>
+                  {selectedSupplier.email}
+                </a>
               </p>
             )}
 
             <h4>Supplied Medicines:</h4>
             <ul>
               {supplierMedicines.length > 0 ? (
-                supplierMedicines.map((med) => <li style={{
-                  listStyle:'none',
-                  marginRight:'40px'
-                }} key={med.id}>{med.name}</li>)
+                supplierMedicines.map((med) => (
+                  <li key={med.id} style={{ listStyle: "none", marginRight: "40px" }}>
+                    {med.name}
+                  </li>
+                ))
               ) : (
                 <li>No medicines found for this supplier.</li>
               )}

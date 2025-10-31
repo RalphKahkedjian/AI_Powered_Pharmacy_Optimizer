@@ -27,7 +27,7 @@ export default function ProfileSection() {
         padding: "30px",
         backgroundColor: "#DBD7C9",
         borderRadius: "20px",
-        boxShadow: "0 6px 18px rgba(0,0,0,0.15)",
+        boxShadow: "5px 15px 5px 4px #4C4B43",
         fontFamily: "Montserrat, sans-serif",
       }}
     >
