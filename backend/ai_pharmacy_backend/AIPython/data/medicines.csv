@@ -1,0 +1,4 @@
+id,name,batch,quantity,price,expiry_date,supplier_id,image_url,created_at
+3,"Panadol",B-391,200,7.5,2050-09-20,1,medicines/T8t0bImlXYvhAmzwm7lnOfwBBs7Npp8eWfapXnnn.png,2025-11-05 16:46:20
+4,Profinal,A-32093,21,100,2019-12-20,medicines/nkMxBQ9LRG4ZKNzLflDqWOwk7eVprkgCAcrBaaUy.png,1,"2025-11-05 16:49:51"
+5,Panadol,B123,10.5,100,2026-01-01,,1,"2025-11-05 16:51:13"

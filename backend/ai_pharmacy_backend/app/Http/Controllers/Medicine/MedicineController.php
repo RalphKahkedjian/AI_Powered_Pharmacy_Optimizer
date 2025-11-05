@@ -3,6 +3,9 @@
 // app/Http/Controllers/MedicineController.php
 namespace App\Http\Controllers\Medicine;
 
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
+
 use App\Models\Medicine;
 use Illuminate\Http\Request;
 
@@ -20,6 +23,7 @@ public function store(Request $request)
         'name' => 'required|string',
         'batch' => 'nullable|string',
         'quantity' => 'required|integer|min:0',
+        'price' => 'required|numeric|min:0',
         'expiry_date' => 'nullable|date',
         'supplier_id' => 'required|exists:suppliers,id',
         'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -32,11 +36,54 @@ public function store(Request $request)
 
     $medicine = Medicine::create($validated);
 
+    $csvPath = base_path('../../AIPython/data/medicines.csv');
+
+    if (!File::exists(dirname($csvPath))) {
+            File::makeDirectory(dirname($csvPath), 0755, true);
+    }
+
+
+    if (!File::exists($csvPath) || filesize($csvPath) === 0) {
+        $headers = [
+            'id',
+            'name',
+            'batch',
+            'price',
+            'quantity',
+            'expiry_date',
+            'image_url',
+            'supplier_id',
+            'created_at'
+        ];
+        $file = fopen($csvPath, 'w');
+        fputcsv($file, $headers);
+        fclose($file);
+    }
+
+
+    $file = fopen($csvPath, 'a');
+    fputcsv($file, [
+        $medicine->id,
+        $medicine->name,
+        $medicine->batch,
+        $medicine->price,
+        $medicine->quantity,
+        $medicine->expiry_date,
+        $medicine->image_url,
+        $medicine->supplier_id,
+        $medicine->created_at,
+    ]);
+    fclose($file);
+
+    \Log::info('Debugging file write test if reached', ['path' => $csvPath]);
+
+
     return response()->json([
         'message' => 'Medicine added successfully',
         'medicine' => $medicine,
     ]);
 }
+
 
 
 public function update(Request $request, $id)

@@ -14,6 +14,7 @@ class Medicine extends Model
         'image_url',
         'batch',
         'quantity',
+        'price',
         'expiry_date',
         'supplier_id',
     ];

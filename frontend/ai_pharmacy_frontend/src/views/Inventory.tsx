@@ -20,6 +20,7 @@ export default function Inventory() {
     name: "",
     image_url: "",
     batch: "",
+    price: 0.0,
     quantity: 0,
     expiry_date: "",
     supplier_id: 0,
@@ -51,13 +52,14 @@ export default function Inventory() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
-    setShowCreateModal(false); // closes modal immediately
+    setShowCreateModal(false);
 
     try {
       const formData = new FormData();
       formData.append("name", newMedicine.name);
       formData.append("batch", newMedicine.batch ?? "");
       formData.append("quantity", newMedicine.quantity.toString());
+      formData.append("price", newMedicine.price.toString());
       formData.append("expiry_date", newMedicine.expiry_date ?? "");
       formData.append("supplier_id", newMedicine.supplier_id.toString());
       if (newMedicine.image) {
@@ -74,6 +76,7 @@ export default function Inventory() {
         image_url: "",
         batch: "",
         quantity: 0,
+        price: 0.0,
         expiry_date: "",
         supplier_id: 0,
         image: null,
@@ -129,6 +132,7 @@ export default function Inventory() {
               <th>Name</th>
               <th>Batch</th>
               <th>Quantity</th>
+              <th>Price</th>
               <th>Expiry Date</th>
             </tr>
           </thead>
@@ -138,6 +142,7 @@ export default function Inventory() {
                 <td>{m.name}</td>
                 <td>{m.batch}</td>
                 <td>{m.quantity}</td>
+                <td>$ {m.price}</td>
                 <td>{m.expiry_date}</td>
               </tr>
             ))}
@@ -170,6 +175,9 @@ export default function Inventory() {
             </p>
             <p>
               <strong>Quantity:</strong> {selectedMedicine.quantity}
+            </p>
+            <p>
+              <strong>Price: </strong> {selectedMedicine.price}
             </p>
             <p>
               <strong>Expiry Date:</strong> {selectedMedicine.expiry_date ?? "—"}
@@ -243,6 +251,14 @@ export default function Inventory() {
                 value={newMedicine.quantity}
                 onChange={(e) =>
                   setNewMedicine({ ...newMedicine, quantity: Number(e.target.value) })
+                }
+              />
+              <input
+                type="number"
+                placeholder="Price"
+                value={newMedicine.price}
+                onChange={(e) =>
+                  setNewMedicine({ ...newMedicine, price: Number(e.target.value) })
                 }
               />
               <input

@@ -5,6 +5,7 @@ export interface Medicine {
   image_url: string | null;
   batch: string | null;
   quantity: number;
+  price: number,
   expiry_date: string;
   supplier_id: number;
   created_at: string;
@@ -14,5 +15,5 @@ export interface Medicine {
 // 👇 Add this:
 export type MedicineInput = Pick<
   Medicine,
-  "name" | "image_url" | "batch" | "quantity" | "expiry_date" | "supplier_id"
+  "name" | "image_url" | "batch" | "price" |"quantity" | "expiry_date" | "supplier_id"
 >;

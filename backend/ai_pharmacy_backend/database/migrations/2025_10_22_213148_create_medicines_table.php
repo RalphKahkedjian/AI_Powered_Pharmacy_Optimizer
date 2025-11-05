@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('batch')->nullable();
             $table->integer('quantity')->default(0);
             $table->date('expiry_date')->nullable();
+            $table->decimal('price');
             $table->foreignId('supplier_id')->constrained('suppliers')->onDelete('cascade');
             $table->timestamps();
         });

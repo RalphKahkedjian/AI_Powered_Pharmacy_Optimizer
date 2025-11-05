@@ -1,0 +1,3 @@
+id,name,batch,price,quantity,expiry_date,image_url,supplier_id,created_at
+6,Antibiotic,A-393,2122,21,2014-12-21,medicines/ZwnjCmH4xVMwOGZ54wMsXvVjUqkIGz1EmcwDXQPO.png,1,"2025-11-05 16:53:57"
+7,Panadol,B123,10.5,100,2026-01-01,,1,"2025-11-05 16:55:08"
